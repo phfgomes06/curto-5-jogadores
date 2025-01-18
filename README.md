@@ -32,21 +32,20 @@ Execute o programa com o comando:
 ### 3. **Jogadores**
 - Cada jogador possui:
   - Nome
-  - Cartas na mão (até 10 cartas)
-  - Quantidade de fichas
+  - Cartas na mão (até 6 cartas)
   - Ponteiros para funções que definem estratégias de aposta e jogada.
 
 ### 4. **Mãos**
 - Representa as cartas jogadas por cada jogador em uma rodada.
 
 ### 5. **Apostas**
-- Gerencia o valor apostado por cada jogador e o total acumulado no pote.
+- Gerencia a estimativa de vitorias de cada jogador por rodada.
 
 ### 6. **Rodadas**
-- Representa uma única rodada do jogo, incluindo as jogadas e a fase de apostas.
+- Representa uma única rodada do jogo, incluindo a fase de apostas.
 
 ### 7. **Jogo Completo**
-- Coordena a sequência de rodadas, gerencia o baralho, jogadores e determina o vencedor final (dependendo das regras implementadas).
+- Coordena a sequência de rodadas, gerencia o baralho, jogadores e determina o vencedor/ perdedir final.
 
 ## Licença
 Este projeto é livre para uso acadêmico e didático. Sinta-se à vontade para modificá-lo e adaptá-lo às suas necessidades.
