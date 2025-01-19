@@ -1,5 +1,4 @@
-#ifndef CARD_H
-#define CARD_H
+#pragma once
 
 // Definição dos valores das cartas
 typedef enum {
@@ -23,6 +22,9 @@ typedef struct {
     CardSuit suit;
 } Card;
 
+// Constante para representar uma carta inválida
+extern const Card INVALID_CARD;
+
 // Função para imprimir o valor da carta
 char* toString(const Card *card);
 
@@ -35,4 +37,6 @@ void test_cmpCards();
 // Declaração da função de teste para toStringCard
 void test_toStringCard();
 
-#endif // CARD_H
+// Declaração da função nextCard
+int nextCard(int value);
+

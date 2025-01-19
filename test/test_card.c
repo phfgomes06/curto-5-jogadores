@@ -40,12 +40,27 @@ void test_cmpCards() {
     printf("cmpCards tests complete.\n");
 }
 
+void test_nextCard() {
+    printf("Running nextCard tests...\n");
+
+    ASSERT_TEST(nextCard(3) == 4, "Next card after 3 should be 4");
+    ASSERT_TEST(nextCard(2) == 3, "Next card after 2 should be 3");
+    ASSERT_TEST(nextCard(A) == 2, "Next card after A should be 2");
+    ASSERT_TEST(nextCard(K) == A, "Next card after K should be A");
+    ASSERT_TEST(nextCard(J) == K, "Next card after J should be K");
+    ASSERT_TEST(nextCard(Q) == J, "Next card after Q should be J");
+    ASSERT_TEST(nextCard(5) == 6, "Next card after 5 should be 6");
+
+    printf("nextCard tests complete.\n");
+}
+
 // Testes do módulo card
 void run_card_tests() {
     printf("Running card tests...\n");
 
     test_toStringCard();
     test_cmpCards();
+    test_nextCard();
 
     printf("Card tests complete.\n");
 }

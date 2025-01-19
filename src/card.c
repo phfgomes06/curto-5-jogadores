@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include "../include/card.h"
 
+// Definição da constante para representar uma carta inválida
+const Card INVALID_CARD = {0, 0};
+
 // Função para converter o valor da carta em uma string
 char* toString(const Card *card) {
     const char *valueMap[13] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
@@ -29,6 +32,18 @@ int getCardOrder(int value) {
         case 2: return 9;
         case 3: return 10;
         default: return value - 3;
+    }
+}
+
+int nextCard(int value) {
+    switch (value) {
+        case 3: return 4;
+        case 2: return 3;
+        case A: return 2;
+        case K: return A;
+        case J: return K;
+        case Q: return J;
+        default: return value + 1;
     }
 }
 
