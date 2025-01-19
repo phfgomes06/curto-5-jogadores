@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "deck.h": "c",
+        "cmath": "c"
+    }
+}
