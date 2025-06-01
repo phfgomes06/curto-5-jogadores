@@ -1,18 +1,22 @@
 CC = gcc
-CFLAGS = -Wall -I./include
+CFLAGS = -Wall -Wextra -std=c99
+JOGADORES = jogadores/aleatorio1.c jogadores/aleatorio2.c jogadores/simples.c jogadores/simples2.c 
 
-SRC = src/card.c src/deck.c src/tournament.c src/game.c $(wildcard bots/*.c)
-TEST = test/all_tests.c test/test_card.c test/test_deck.c test/test_tournament.c
-HEADERS = test/test_utils.h include/card.h include/deck.h include/tournament.h include/bots.h
+OBJ = baralho.o mao.o rodada.o jogo.o
 
-all_tests: $(SRC) $(TEST) $(HEADERS)
-	$(CC) $(CFLAGS) $(SRC) $(TEST) -o all_tests
+all: main teste_baralho teste_mao teste_rodada
 
-test: all_tests
-	./all_tests
+main: main.c $(OBJ) $(JOGADORES)
+	$(CC) $(CFLAGS) -o main main.c $(OBJ) $(JOGADORES)
 
-main: $(SRC) $(HEADERS) src/main.c
-	$(CC) $(CFLAGS) $(SRC) src/main.c -o main
+teste_baralho: baralho.c teste_baralho.c
+	$(CC) $(CFLAGS) -o teste_baralho baralho.c teste_baralho.c
+
+teste_mao: $(OBJ) teste_mao.c
+	$(CC) $(CFLAGS) -o teste_mao $(OBJ) teste_mao.c
+
+teste_rodada: rodada.c baralho.c teste_rodada.c
+	$(CC) $(CFLAGS) -o teste_rodada rodada.c baralho.c teste_rodada.c
 
 clean:
-	rm -f all_tests main
+	rm -f *.o teste_baralho teste_mao
