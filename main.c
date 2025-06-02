@@ -1,4 +1,3 @@
-// %%INCLUDES%%
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,20 +12,24 @@
 #include "jogadores/simples.h"
 #include "jogadores/simples2.h"
 
+#define NUM_JOGADORES 4
 
-void iniciar_jogadores(Jogo* jogo) {
-    jogo->nomes[0] = nome_aleatorio1();
-    jogo->nomes[1] = nome_aleatorio2();
-    jogo->nomes[2] = nome_simples();
-    jogo->nomes[3] = nome_simples2();
+Jogo jogo;
+
+void iniciar_jogadores() {
+    jogo.nomes[0] = nome_aleatorio1();
+    jogo.nomes[1] = nome_aleatorio2();
+    jogo.nomes[2] = nome_simples();
+    jogo.nomes[3] = nome_simples2();
 
     iniciar_aleatorio1(0, NUM_JOGADORES);
     iniciar_aleatorio2(1, NUM_JOGADORES);
     iniciar_simples(2, NUM_JOGADORES);
     iniciar_simples2(3, NUM_JOGADORES);
 
-    memset(jogo->penalidades, 0, sizeof(jogo->penalidades));
-    jogo->jogador_inicial = 0;
+    memset(jogo.penalidades, 0, sizeof(jogo.penalidades));
+    jogo.jogador_inicial_mao = jogo.jogador_inicial_rodada = 0;
+    jogo.num_jogadores = NUM_JOGADORES;
 }
 
 void informar_maos_para_jogadores(int rodada, const Rodada* r) {
@@ -36,21 +39,38 @@ void informar_maos_para_jogadores(int rodada, const Rodada* r) {
     nova_rodada_simples2(rodada, r->carta_virada, r->cartas_por_jogador, r->maos[3]);
 }
 
+// Função para coletar apostas dos jogadores em ordem circular
 void coletar_apostas(Rodada* r) {
-    r->apostas[0] = apostar_aleatorio1(NULL);
-    r->apostas[1] = apostar_aleatorio2(NULL);
-    r->apostas[2] = apostar_simples(NULL);
-    r->apostas[3] = apostar_simples2(NULL);
+    printf("Apostas:\n");
+
+    // Inicializa o array de apostas com valores inválidos (-1)
+    for (int i = 0; i < NUM_JOGADORES; i++) {
+        r->apostas[i] = -1;
+    }
+
+    // Processa as apostas em ordem circular
+    for (int i = 0; i < NUM_JOGADORES; i++) {
+        int j = (jogo.jogador_inicial_rodada + i) % NUM_JOGADORES;
+
+        // Determina a aposta com base no jogador
+        if (j == 0) r->apostas[j] = apostar_aleatorio1(r->apostas);
+        else if (j == 1) r->apostas[j] = apostar_aleatorio2(r->apostas);
+        else if (j == 2) r->apostas[j] = apostar_simples(r->apostas);
+        else if (j == 3) r->apostas[j] = apostar_simples2(r->apostas);
+
+        printf("%s:\t%d", jogo.nomes[j], r->apostas[j]);
+        getchar();
+    }
+    printf("\n");
 }
 
-
 // Função para processar as jogadas de todos os jogadores em ordem circular
-int processar_jogadas(Rodada* r, Jogada* jogadas, const char** nomes, int* penalidades, int jogador_inicial) {
-    int novo_jogador_inicial = jogador_inicial;
+int processar_jogadas(Rodada* r, Jogada* jogadas) {
+    int novo_jogador_inicial = jogo.jogador_inicial_mao;
 
-    for (int i = 0; i < NUM_JOGADORES; i++) {
+    for (int i = 0; i < jogo.num_jogadores; i++) {
         // Calcula o índice do jogador atual em ordem circular
-        int j = (jogador_inicial + i) % NUM_JOGADORES;
+        int j = (jogo.jogador_inicial_mao + i) % NUM_JOGADORES;
 
         int idx = -1;
 
@@ -61,12 +81,12 @@ int processar_jogadas(Rodada* r, Jogada* jogadas, const char** nomes, int* penal
         else if (j == 3) idx = jogar_simples2(NULL, 0);
 
         // Verifica e processa o descarte
-        if (checar_e_processar_descarte(idx, j, r, jogadas, nomes, penalidades)) {
-            printf("Jogador %s tentou descartar uma carta inválida e foi eliminado!\n", nomes[j]);
+        if (checar_e_processar_descarte(idx, j, r, jogadas)) {
+            printf("Jogador %s tentou descartar uma carta inválida e foi eliminado!\n", jogo.nomes[j]);
 
             // Atualiza o jogador inicial se o jogador eliminado for o atual inicial
             if (j == novo_jogador_inicial) {
-                novo_jogador_inicial = (novo_jogador_inicial + 1) % NUM_JOGADORES;
+                novo_jogador_inicial = (novo_jogador_inicial + 1) % jogo.num_jogadores;
             }
         }
     }
@@ -75,14 +95,13 @@ int processar_jogadas(Rodada* r, Jogada* jogadas, const char** nomes, int* penal
 }
 
 int main() {
-    Jogo jogo;
-    iniciar_jogadores(&jogo);
+    iniciar_jogadores();
 
     for (int rodada = 1; rodada <= NUM_RODADAS; rodada++) {
-        executar_rodada(&jogo, rodada);
+        executar_rodada(rodada);
     }
 
-    imprimir_resultado_final(&jogo);
+    imprimir_resultado_final();
     return 0;
 }
 
