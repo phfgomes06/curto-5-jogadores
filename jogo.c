@@ -107,6 +107,7 @@ void executar_rodada(int rodada) {
 
     // Rotaciona o jogador inicial para a próxima rodada
     jogo.jogador_inicial_rodada = (jogo.jogador_inicial_rodada + 1) % jogo.num_jogadores;
+    jogo.jogador_inicial_mao = jogo.jogador_inicial_rodada;
 }
 
 void imprimir_resultado_final() {
